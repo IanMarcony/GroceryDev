@@ -1,0 +1,30 @@
+version: '3.1'
+
+services:
+  grocery_mysql:
+    image: mysql
+    command: --default-authentication-plugin=mysql_native_password
+    container_name: grocery_mysql
+    restart: always
+    environment:
+      MYSQL_USER: root
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_PASSWORD: mysql
+      MYSQL_DATABASE: database_grocery
+    ports:
+      - 3307:3306
+    networks:
+      - mysql-compose-network
+
+  # grocery_api:
+  #   build: './'
+  #   container_name: grocery_api
+  #   restart: always
+  #   ports:
+  #     - 3333:3333
+  #   depends_on:
+  #     - grocery_mysql
+
+networks:
+  mysql-compose-network:
+    driver: bridge
