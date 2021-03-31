@@ -25,7 +25,7 @@ class Purchase {
 
   @ManyToMany(() => Product)
   @JoinTable()
-  categories: Product[];
+  products: Product[];
 
   @CreateDateColumn()
   created_at: Date;

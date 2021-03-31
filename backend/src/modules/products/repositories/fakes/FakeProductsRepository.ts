@@ -1,5 +1,6 @@
 import ICreateProductDTO from '@modules/products/dtos/ICreateProductDTO';
 import Product from '@modules/products/infra/typeorm/entities/Product';
+import { idText } from 'typescript';
 import { uuid } from 'uuidv4';
 import IProductsRepository from '../IProductsRepository';
 
@@ -16,13 +17,27 @@ class FakeProductsRepository implements IProductsRepository {
     return product;
   }
 
-  public async findByName(name: string): Promise<Product | undefined> {
+  public async findByNameAndDescription(
+    name: string,
+    description: string,
+  ): Promise<Product | undefined> {
     const product = await this.products.find(
-      (findProduct) => findProduct.name === name,
+      (findProduct) =>
+        findProduct.name === name && findProduct.description === description,
     );
     return product;
   }
 
+  public async findProductsWithId(product_ids: string[]): Promise<Product[]> {
+    var products = [];
+
+    for (let index = 0; index < product_ids.length; index++) {
+      const product = await this.findById(product_ids[index]);
+      if (!product) continue;
+      products.push(product);
+    }
+    return products;
+  }
   public async create({
     description,
     name,

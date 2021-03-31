@@ -24,7 +24,7 @@ describe('CreateProductService', () => {
     expect(create).toHaveBeenCalled();
   });
 
-  it('should not be able to create a product with same name', async () => {
+  it('should not be able to create a product with same name and description', async () => {
     await createProduct.execute({
       name: 'lata',
       description: 'lata',
