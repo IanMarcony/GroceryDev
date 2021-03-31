@@ -5,7 +5,7 @@ import IPurchasesRepository from '../repositories/IPurchasesRepository';
 
 interface IRequest {
   pay_type: string;
-  status: string;
+
   products: Product[];
 }
 
@@ -16,15 +16,10 @@ class CreatePurchaseService {
     private purchasesRepository: IPurchasesRepository,
   ) {}
 
-  public async execute({
-    pay_type,
-    products,
-    status,
-  }: IRequest): Promise<Purchase> {
+  public async execute({ pay_type, products }: IRequest): Promise<Purchase> {
     const purchase = await this.purchasesRepository.create({
       pay_type,
       products,
-      status,
     });
 
     return purchase;

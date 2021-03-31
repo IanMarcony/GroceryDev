@@ -14,9 +14,9 @@ class DeleteProductService {
   ) {}
 
   async execute({ id }: IRequest): Promise<void> {
-    const checkProductExists = await this.productsRepository.findById(id);
+    const product = await this.productsRepository.findById(id);
 
-    if (!checkProductExists) {
+    if (!product) {
       throw new AppError('Product does not exist');
     }
 

@@ -61,6 +61,6 @@ export default class ProductsController {
 
     await deleteProduct.execute({ id });
 
-    return res.status(204);
+    return res.status(204).json({});
   }
 }

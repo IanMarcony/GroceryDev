@@ -10,15 +10,17 @@ export default class FakePurchasesRepository implements IPurchasesRepository {
   public async findAll(): Promise<Purchase[]> {
     return this.purchases;
   }
+
   public async findById(purchase_id: string): Promise<Purchase | undefined> {
     const purchase = await this.purchases.find(
       (findPurchase) => findPurchase.id === purchase_id,
     );
     return purchase;
   }
+
   public async create({
     pay_type,
-    status,
+
     products,
   }: ICreatePurchaseDTO): Promise<Purchase> {
     const purchase = new Purchase();
@@ -30,7 +32,7 @@ export default class FakePurchasesRepository implements IPurchasesRepository {
       id: uuid(),
       total,
       pay_type,
-      status,
+      status: 'ABERTO',
       products,
     });
 
@@ -38,6 +40,7 @@ export default class FakePurchasesRepository implements IPurchasesRepository {
 
     return purchase;
   }
+
   public async update(data: Purchase): Promise<Purchase> {
     const findIndex = this.purchases.findIndex(
       (findPurchase) => findPurchase.id === data.id,
@@ -51,6 +54,7 @@ export default class FakePurchasesRepository implements IPurchasesRepository {
 
     return { ...data, total };
   }
+
   public async delete(purchase_id: string): Promise<void> {
     const findIndex = await this.purchases.findIndex(
       (findPurchase) => findPurchase.id === purchase_id,

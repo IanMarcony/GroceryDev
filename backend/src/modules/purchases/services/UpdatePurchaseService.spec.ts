@@ -42,7 +42,7 @@ describe('UpdatePurchaseService', () => {
 
     const purchase = await fakePurchasesRepository.create({
       pay_type: 'credit card',
-      status: 'ABERTO',
+
       products,
     });
 
@@ -89,7 +89,7 @@ describe('UpdatePurchaseService', () => {
 
     const purchase = await fakePurchasesRepository.create({
       pay_type: 'credit card',
-      status: 'ABERTO',
+
       products,
     });
 
@@ -143,7 +143,7 @@ describe('UpdatePurchaseService', () => {
 
     const purchase = await fakePurchasesRepository.create({
       pay_type: 'credit card',
-      status: 'ABERTO',
+
       products,
     });
 

@@ -1,5 +1,4 @@
 import FakeProductsRepository from '@modules/products/repositories/fakes/FakeProductsRepository';
-import CreateProductService from '@modules/products/services/CreateProductService';
 import FakePurchasesRepository from '../repositories/fakes/FakePurchasesRepository';
 import CreatePurchaseService from './CreatePurchaseService';
 
@@ -40,7 +39,7 @@ describe('CreatePurchaseService', () => {
 
     const purchase = await createPurchase.execute({
       pay_type: 'credit card',
-      status: 'ABERTO',
+
       products,
     });
 

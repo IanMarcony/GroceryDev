@@ -4,12 +4,12 @@ import PurchasesController from '../controllers/PurchasesController';
 
 const purchasesController = new PurchasesController();
 
-const purchaseRoutes = Router();
+const purchasesRouter = Router();
 
-purchaseRoutes.get('/all', purchasesController.index);
-purchaseRoutes.get('/single', purchasesController.show);
-purchaseRoutes.post('/', purchasesController.create);
-purchaseRoutes.put('/', purchasesController.update);
-purchaseRoutes.delete('/', purchasesController.delete);
+purchasesRouter.get('/all', purchasesController.index);
+purchasesRouter.get('/single', purchasesController.show);
+purchasesRouter.post('/', purchasesController.create);
+purchasesRouter.put('/', purchasesController.update);
+purchasesRouter.delete('/', purchasesController.delete);
 
-export default purchaseRoutes;
+export default purchasesRouter;

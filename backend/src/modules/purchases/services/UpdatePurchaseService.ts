@@ -6,6 +6,7 @@ import IPurchasesRepository from '../repositories/IPurchasesRepository';
 
 interface IRequest extends ICreatePurchaseDTO {
   id: string;
+  status: string;
 }
 
 @injectable()

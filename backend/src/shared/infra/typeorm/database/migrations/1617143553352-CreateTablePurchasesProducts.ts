@@ -5,26 +5,15 @@ export class CreateTablePurchasesProducts1617143553352
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
-        name: 'purchases_products',
+        name: 'purchases_products_products',
         columns: [
           {
-            name: 'id',
-            type: 'varchar',
-            isPrimary: true,
-            generationStrategy: 'uuid',
-          },
-          {
-            name: 'purchase_id',
+            name: 'purchasesId',
             type: 'varchar',
           },
           {
-            name: 'product_id',
+            name: 'productsId',
             type: 'varchar',
-          },
-          {
-            name: 'created_at',
-            type: 'timestamp',
-            default: 'now()',
           },
         ],
         foreignKeys: [
@@ -32,7 +21,7 @@ export class CreateTablePurchasesProducts1617143553352
             name: 'fk_purchase',
             referencedTableName: 'purchases',
             referencedColumnNames: ['id'],
-            columnNames: ['purchase_id'],
+            columnNames: ['purchasesId'],
             onDelete: 'CASCADE',
             onUpdate: 'CASCADE',
           },
@@ -40,7 +29,7 @@ export class CreateTablePurchasesProducts1617143553352
             name: 'fk_product',
             referencedTableName: 'products',
             referencedColumnNames: ['id'],
-            columnNames: ['product_id'],
+            columnNames: ['productsId'],
             onDelete: 'CASCADE',
             onUpdate: 'CASCADE',
           },
@@ -50,6 +39,6 @@ export class CreateTablePurchasesProducts1617143553352
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropTable('purchases_products');
+    await queryRunner.dropTable('purchases_products_products');
   }
 }

@@ -24,12 +24,12 @@ export default class ProductsRepository implements IProductsRepository {
 
   public async findProductsWithId(
     product_ids: string[],
-  ): Promise<Array<Product | undefined>> {
+  ): Promise<Array<Product>> {
     var products = [];
 
     for (let index = 0; index < product_ids.length; index++) {
       const product = await this.findById(product_ids[index]);
-
+      if (!product) continue;
       products.push(product);
     }
 
@@ -64,6 +64,6 @@ export default class ProductsRepository implements IProductsRepository {
     return await this.ormRepository.save(product);
   }
   public async delete(product_id: string): Promise<void> {
-    await this.ormRepository.softDelete(product_id);
+    await this.ormRepository.delete({ id: product_id });
   }
 }

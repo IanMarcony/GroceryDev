@@ -2,6 +2,7 @@ import Product from '@modules/products/infra/typeorm/entities/Product';
 import {
   Column,
   CreateDateColumn,
+  DeleteDateColumn,
   Entity,
   JoinTable,
   ManyToMany,
@@ -23,15 +24,12 @@ class Purchase {
   @Column('varchar')
   status: string;
 
-  @ManyToMany(() => Product)
+  @ManyToMany(() => Product, { onDelete: 'CASCADE' })
   @JoinTable()
   products: Product[];
 
   @CreateDateColumn()
   created_at: Date;
-
-  @UpdateDateColumn()
-  updated_at: Date;
 }
 
 export default Purchase;

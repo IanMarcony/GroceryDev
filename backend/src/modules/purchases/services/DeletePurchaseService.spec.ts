@@ -17,7 +17,7 @@ describe('DeletePurchaseService', () => {
 
     const { id } = await fakePurchasesRepository.create({
       pay_type: 'credit card',
-      status: 'ABERTO',
+
       products: [new Product(), new Product(), new Product()],
     });
 
