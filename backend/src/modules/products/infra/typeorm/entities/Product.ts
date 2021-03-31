@@ -9,15 +9,15 @@ import {
 @Entity('products')
 class Product {
   @PrimaryGeneratedColumn('uuid')
-  id: number;
+  id: string;
 
-  @Column()
+  @Column('varchar')
   name: string;
 
-  @Column()
+  @Column('text')
   description: string;
 
-  @Column()
+  @Column('double')
   price: number;
 
   @CreateDateColumn()

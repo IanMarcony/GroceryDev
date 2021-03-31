@@ -1,27 +1,31 @@
+import Product from '@modules/products/infra/typeorm/entities/Product';
 import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinTable,
+  ManyToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 
-@Entity('pruchases')
+@Entity('purchases')
 class Purchase {
   @PrimaryGeneratedColumn('uuid')
-  id: number;
+  id: string;
 
-  @Column()
+  @Column('double')
   total: number;
 
-  @Column()
-  price: number;
-
-  @Column()
+  @Column('varchar')
   pay_type: string;
 
-  @Column()
+  @Column('varchar')
   status: string;
+
+  @ManyToMany(() => Product)
+  @JoinTable()
+  categories: Product[];
 
   @CreateDateColumn()
   created_at: Date;
