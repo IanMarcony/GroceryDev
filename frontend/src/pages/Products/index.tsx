@@ -35,7 +35,7 @@ const Products: React.FC = () => {
     }
 
     loadProducts();
-  }, []);
+  }, [addToast]);
 
   const handleAlter = useCallback(async (id: string) => {}, []);
   const handleDelete = useCallback(async (id: string) => {}, []);
@@ -63,7 +63,7 @@ const Products: React.FC = () => {
               </button>
               <button type="button" onClick={() => handleDelete(product.id)}>
                 <Tooltip title="Deletar">
-                  <FiDelete size={20} />
+                  <FiDelete size={20} color="#c53030" />
                 </Tooltip>
               </button>
               <button
