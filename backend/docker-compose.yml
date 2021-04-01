@@ -7,9 +7,7 @@ services:
     container_name: grocery_mysql
     restart: always
     environment:
-      MYSQL_USER: root
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_PASSWORD: mysql
       MYSQL_DATABASE: database_grocery
     ports:
       - 3308:3306
