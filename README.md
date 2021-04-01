@@ -26,6 +26,10 @@ Este é um sistema de comércio com CRUD de produtos e compras
 
   npm install # ou  yarn
 
+  docker-compose up -d # para iniciar o MySQL
+
+  npm run typeorm migration:run # para executar as migrations
+
   cd ../frontend #entre na pasta frontend
 
   npm install # ou yarn
