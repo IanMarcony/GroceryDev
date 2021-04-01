@@ -1,7 +1,5 @@
 import styled, { keyframes } from 'styled-components';
 
-import backgroundImage from '../../assets/images/supermarket-people.jpg';
-
 const appearFromDown = keyframes`
   from{
     opacity: 0;
@@ -19,6 +17,7 @@ const appearFromDown = keyframes`
 export const AnimationContainer = styled.div`
   text-align: center;
   animation: ${appearFromDown} 1s;
+  height: 100%;
 
   h1 {
     margin-top: 20px;
@@ -29,6 +28,12 @@ export const AnimationContainer = styled.div`
     margin-top: 10px;
     font-size: 20px;
   }
+
+  img {
+    width: 50%;
+    height: 50%;
+    margin-top: auto;
+  }
 `;
 
 export const Container = styled.div`
@@ -36,8 +41,4 @@ export const Container = styled.div`
   max-width: 1100px;
   height: 100vh;
   margin: 0 auto;
-  background-image: url(${backgroundImage});
-  background-repeat: no-repeat;
-  background-size: 50%;
-  background-position: bottom;
 `;

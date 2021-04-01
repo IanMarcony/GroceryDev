@@ -6,6 +6,12 @@ export const Container = styled.div`
   max-width: 700px;
   height: 100vh;
   margin: 0 auto;
+
+  > button {
+    svg:hover {
+      color: ${shade(0.2, '#385a64')};
+    }
+  }
 `;
 
 const appearFromDown = keyframes`

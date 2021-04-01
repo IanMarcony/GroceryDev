@@ -2,7 +2,11 @@ import React from 'react';
 import { Switch, Route } from 'react-router-dom';
 import Home from '../pages/Home';
 import Products from '../pages/Products';
+import FormProducts from '../pages/Products/FormProducts';
+import ProductsMoreInformation from '../pages/Products/ProductsMoreInformation';
 import Purchases from '../pages/Purchases';
+import FormPurchases from '../pages/Purchases/FormPurchases';
+import PurchasesMoreInformation from '../pages/Purchases/PurchasesMoreInformation';
 
 const Routes: React.FC = () => {
   return (
@@ -10,6 +14,10 @@ const Routes: React.FC = () => {
       <Route exact path="/" component={Home} />
       <Route path="/products" component={Products} />
       <Route path="/purchases" component={Purchases} />
+      <Route path="/info/product/:id+" component={ProductsMoreInformation} />
+      <Route path="/info/puchase/:id+" component={PurchasesMoreInformation} />
+      <Route path="/:type+/products" component={FormProducts} />
+      <Route path="/:type+/purchases" component={FormPurchases} />
     </Switch>
   );
 };
