@@ -22,11 +22,11 @@ Este é um sistema de comércio com CRUD de produtos e compras
 ```bash
   git clone https://github.com/IanMarcony/GroceryDev.git
 
-  cd GroceryDev/backend
+  cd GroceryDev/backend # entre na pasta backend
 
   npm install # ou  yarn
 
-  cd ../frontend
+  cd ../frontend #entre na pasta frontend
 
   npm install # ou yarn
 ```
@@ -39,7 +39,7 @@ Este é um sistema de comércio com CRUD de produtos e compras
   # Entre na pasta do projeto
   # Deve ter permissão root/de adminitrador
 
-  cd backend/
+  cd backend/ # entrar na pasta do backend
 
   docker-compose up -d # irá inciar o contêiner do MYSQL na porta 3308
 
@@ -51,7 +51,7 @@ Este é um sistema de comércio com CRUD de produtos e compras
 ```bash
   # Entre na pasta do projeto
 
-  cd frontend/
+  cd frontend/ # entrar na pasta do frontend
 
   npm start # ou yarn start
 ```
