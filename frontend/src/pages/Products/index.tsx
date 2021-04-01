@@ -27,11 +27,19 @@ const Products: React.FC = () => {
 
   useEffect(() => {
     async function loadProducts() {
-      const { data } = await api.get('/products/all');
+      try {
+        const { data } = await api.get('/products/all');
 
-      setProducts([...data]);
+        setProducts([...data]);
 
-      addToast({ title: 'Carregado todos os produtos' });
+        addToast({ title: 'Carregado todos os produtos' });
+      } catch {
+        addToast({
+          title: 'Occoreu algum erro',
+          description: 'Falha na comunicação com o servidor',
+          type: 'error',
+        });
+      }
     }
 
     loadProducts();

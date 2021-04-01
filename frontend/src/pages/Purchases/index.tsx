@@ -25,10 +25,18 @@ const Purchases: React.FC = () => {
 
   useEffect(() => {
     async function loadPurchases() {
-      const { data } = await api.get('/purchases/all');
+      try {
+        const { data } = await api.get('/purchases/all');
 
-      setPurchases([...data]);
-      addToast({ title: 'Carregado todas as compras' });
+        setPurchases([...data]);
+        addToast({ title: 'Carregado todas as compras' });
+      } catch {
+        addToast({
+          title: 'Occoreu algum erro',
+          description: 'Falha na comunicação com o servidor',
+          type: 'error',
+        });
+      }
     }
 
     loadPurchases();
