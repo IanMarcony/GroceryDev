@@ -22,6 +22,10 @@ export const Container = styled.div`
     margin-top: 10px;
     font-size: 20px;
   }
+
+  img {
+    margin-top: auto;
+  }
 `;
 
 const appearFromDown = keyframes`

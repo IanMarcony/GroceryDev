@@ -39,11 +39,7 @@ const PurchasesMoreInformation: React.FC = () => {
   useEffect(() => {
     setLoading(true);
     api
-      .get('/purchases/single', {
-        data: {
-          id: params.id,
-        },
-      })
+      .get(`/purchases/single?id=${params.id}`)
       .then((response) => {
         setPurchase(response.data);
         setLoading(false);

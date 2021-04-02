@@ -36,11 +36,11 @@ export default class PurchasesController {
   }
 
   public async show(req: Request, res: Response): Promise<Response> {
-    const { id } = req.body;
+    const { id } = req.query;
 
     const purchasesRepository = new PurchasesRepository();
 
-    const purchase = await purchasesRepository.findById(id);
+    const purchase = await purchasesRepository.findById(String(id));
 
     if (!purchase) {
       throw new AppError('Purchase does not exist', 404);

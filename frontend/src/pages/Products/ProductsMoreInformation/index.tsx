@@ -3,6 +3,7 @@ import { CircularProgress } from '@material-ui/core';
 import { useRouteMatch } from 'react-router-dom';
 import { useToast } from '../../../hooks/toast';
 import api from '../../../services/api';
+import backgroundImage from '../../../assets/images/supermarket-people.jpg';
 
 import { Container, AnimationContainer } from './styles';
 
@@ -52,6 +53,7 @@ const ProductsMoreInformation: React.FC = () => {
       <h1>{product?.name}</h1>
       <p>Descrição:{product?.description}</p>
       <span>Preço: R${product?.price.toFixed(2)}</span>
+      <img src={backgroundImage} alt="pessoas no supermercado" />
     </Container>
   );
 };
