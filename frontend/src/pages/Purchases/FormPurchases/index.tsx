@@ -1,4 +1,5 @@
-import React, { useCallback, useState, useEffect } from 'react';
+/* eslint-disable no-plusplus */
+import React, { useCallback, useState, useEffect, useRef } from 'react';
 
 import {
   FormControl,
@@ -7,18 +8,29 @@ import {
   MenuItem,
   Checkbox,
 } from '@material-ui/core';
-import { useHistory, useLocation, useRouteMatch } from 'react-router-dom';
-import Input from '../../../components/Input';
+// import { FormHandles } from '@unform/core';
+// import { Form } from '@unform/web';
+import { useHistory, useLocation } from 'react-router-dom';
+// import Input from '../../../components/Input';
 import api from '../../../services/api';
 import { useToast } from '../../../hooks/toast';
 
 import Button from '../../../components/Button';
-import SelectS from '../../../components/SelectS';
-import { Container, ProductContainer } from './styles';
+// import SelectS from '../../../components/SelectS';
+import { Container, ProductContainer, InputF } from './styles';
+
+interface PurchaseResponse {
+  id: string;
+  total: number;
+  pay_type: string;
+  status: string;
+  products: ProductState[];
+}
 
 interface PurchaseState {
   id?: string;
   products_id: string[];
+  products?: ProductState[];
   status?: string;
   total?: number;
   pay_type: string;
@@ -46,12 +58,14 @@ interface IPurchasesParams {
 }
 
 const FormPurchases: React.FC = () => {
+  // const formRef = useRef<FormHandles>(null);
+
   const { addToast } = useToast();
   const [purchase, setPurchase] = useState<PurchaseState>({} as PurchaseState);
 
   const [products, setProducts] = useState<ProductState[]>([]);
-  const [selectedProductsId, setSelectedProdutsId] = useState<string[]>([]);
-  const [selectedProducts, setSelectedProduts] = useState<ProductState[]>([]);
+  const [selectedProductsId, setSelectedProductsId] = useState<string[]>([]);
+  const [totalP, setTotalP] = useState(0);
 
   const history = useHistory();
 
@@ -61,23 +75,17 @@ const FormPurchases: React.FC = () => {
   useEffect(() => {
     if (!id) return;
     api
-      .get(`/purchases/single?id=${id}`)
+      .get<PurchaseState>(`/purchases/single?id=${id}`)
       .then((response) => {
         setPurchase(response.data);
 
-        setSelectedProdutsId([response.data.products_id]);
+        setSelectedProductsId(
+          response.data.products
+            ? response.data.products.map((product) => product.id)
+            : [],
+        );
 
-        const selects = [] as ProductState[];
-        // eslint-disable-next-line no-plusplus
-        for (let indexP = 0; indexP < selectedProductsId.length; indexP++) {
-          const idP = selectedProductsId[indexP];
-          const aux = products.findIndex(
-            (findProduct) => findProduct.id === idP,
-          );
-          selects.push(products[aux]);
-        }
-
-        setSelectedProduts([...selects]);
+        setTotalP(response.data.total ? response.data.total : 0);
       })
       .catch((error) => {
         addToast({
@@ -85,26 +93,24 @@ const FormPurchases: React.FC = () => {
           title: 'Erro ao buscar produto',
         });
       });
-  }, [id, addToast, products]);
+  }, [id, addToast, products, selectedProductsId]);
   useEffect(() => {
     async function loadProducts() {
       try {
         const { data } = await api.get('/products/all');
-
         setProducts([...data]);
-
-        addToast({ title: 'Carregado todos os produtos' });
       } catch {
         addToast({
           type: 'error',
           title: 'Erro na conexão',
           description: 'Ocorreu um erro na comunicação com o servidor',
         });
+        history.push('/purchases');
       }
     }
 
     loadProducts();
-  }, [addToast]);
+  }, [addToast, history]);
 
   const handleSubmit = useCallback(async () => {
     if (selectedProductsId.length === 0) {
@@ -134,14 +140,15 @@ const FormPurchases: React.FC = () => {
 
   const handleChange = useCallback(
     (event: React.ChangeEvent<{ value: unknown }>) => {
-      console.log(event.target.value);
-      setSelectedProdutsId(event.target.value as string[]);
-      const index = products.findIndex(
-        (findProduct) => findProduct.id === event.target.value,
-      );
-      setSelectedProduts((state) => [products[index], ...state]);
+      setSelectedProductsId(event.target.value as string[]);
+      for (let i = 0; i < selectedProductsId.length; i++) {
+        const p = products.find(
+          (findProduct) => findProduct.id === selectedProductsId[i],
+        );
+        console.log(`Produto[${i}]:`, p);
+      }
     },
-    [products],
+    [products, selectedProductsId],
   );
 
   return (
@@ -150,7 +157,7 @@ const FormPurchases: React.FC = () => {
         {id ? <h1>Edite a compra</h1> : <h1>Crie uma compra</h1>}
 
         {id && (
-          <Input name="id" type="text" value={id} contentEditable={false} />
+          <InputF name="id" type="text" value={id} contentEditable={false} />
         )}
 
         <FormControl>
@@ -161,7 +168,7 @@ const FormPurchases: React.FC = () => {
             multiple
             value={selectedProductsId}
             onChange={handleChange}
-            input={<Input name="products" />}
+            input={<InputF name="products" />}
             renderValue={(selected) => (selected as string[]).join(', ')}
             MenuProps={MenuProps}
           >
@@ -176,15 +183,9 @@ const FormPurchases: React.FC = () => {
             ))}
           </Select>
         </FormControl>
-        <span>
-          Total:
-          {selectedProducts.reduce(
-            (total, product) => total + product.price,
-            0,
-          )}
-        </span>
+        <span>Total:</span>
 
-        <SelectS
+        <select
           name="pay_type"
           onChange={(event) =>
             setPurchase({
@@ -196,10 +197,10 @@ const FormPurchases: React.FC = () => {
           <option value="cash">Dinheiro</option>
           <option value="credit card">Cartão de Crédito</option>
           <option value="debit card">Cartão de Débito</option>
-        </SelectS>
+        </select>
 
         {id && (
-          <SelectS
+          <select
             name="status"
             onChange={(event) =>
               setPurchase({
@@ -210,7 +211,7 @@ const FormPurchases: React.FC = () => {
           >
             <option value="ABERTO">ABERTO</option>
             <option value="FINALIZADO">FINALIZADO</option>
-          </SelectS>
+          </select>
         )}
 
         <Button type="submit">Salvar</Button>
