@@ -66,7 +66,7 @@ const Products: React.FC = () => {
           id,
         },
       });
-      setProducts((state) => state.splice(index, 1));
+      setProducts((state) => state.filter((product, i) => i !== index));
       addToast({
         title: 'Deletado com sucesso',
 
