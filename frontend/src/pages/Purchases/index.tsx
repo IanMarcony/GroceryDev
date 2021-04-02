@@ -80,7 +80,7 @@ const Purchases: React.FC = () => {
     return (
       <Container>
         <AnimationContainer>
-          <h1>Produtos</h1>
+          <h1>Compras</h1>
           <CircularProgress size={40} color="primary" />
         </AnimationContainer>
       </Container>
