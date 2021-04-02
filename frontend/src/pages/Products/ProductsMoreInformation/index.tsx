@@ -1,5 +1,5 @@
-import { CircularProgress } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
+import { CircularProgress } from '@material-ui/core';
 import { useRouteMatch } from 'react-router-dom';
 import { useToast } from '../../../hooks/toast';
 import api from '../../../services/api';
@@ -25,11 +25,7 @@ const ProductsMoreInformation: React.FC = () => {
   useEffect(() => {
     setLoading(true);
     api
-      .get('/products/single', {
-        data: {
-          id: params.id,
-        },
-      })
+      .get(`/products/single?id=${params.id}`)
       .then((response) => {
         setProduct(response.data);
         setLoading(false);

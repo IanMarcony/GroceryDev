@@ -40,15 +40,17 @@ const FormProducts: React.FC = () => {
 
   useEffect(() => {
     api
-      .get('/products/single', {
-        data: {
-          id,
-        },
-      })
+      .get(`/products/single?id=${id}`)
       .then((response) => {
         setProduct(response.data);
+      })
+      .catch((error) => {
+        addToast({
+          type: 'error',
+          title: 'Erro ao buscar produto',
+        });
       });
-  }, [id]);
+  }, [id, addToast]);
 
   const handleSubmit = useCallback(
     async (data: ProductState) => {
@@ -110,34 +112,37 @@ const FormProducts: React.FC = () => {
   );
   return (
     <Container>
-      <Form ref={formRef} style={{ marginTop: '20px' }} onSubmit={handleSubmit}>
+      <Form
+        ref={formRef}
+        style={{ marginTop: '20px', padding: '10px' }}
+        onSubmit={handleSubmit}
+      >
         {id ? <h1>Edite o produto</h1> : <h1>Crie um produto</h1>}
 
         {id && (
           <Input
             name="id"
             type="text"
-            style={{ marginTop: '10px', cursor: 'none' }}
-            value={id}
+            style={{ cursor: 'none' }}
+            defaultValue={id}
             contentEditable={false}
           />
         )}
         <Input
           name="name"
           type="text"
-          value={product.name}
+          defaultValue={product.name}
           placeholder="Nome"
         />
         <TextArea
           name="description"
-          value={product.description}
+          defaultValue={product.description}
           placeholder="Descrição"
         />
         <Input
           name="price"
           type="text"
-          value={product.price.toFixed(2)}
-          min={0}
+          defaultValue={product.price}
           placeholder="Preço"
         />
         <Button type="submit">Salvar</Button>

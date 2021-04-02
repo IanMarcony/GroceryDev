@@ -28,11 +28,11 @@ export default class ProductsController {
     return res.json(products);
   }
   public async show(req: Request, res: Response): Promise<Response> {
-    const { id } = req.body;
+    const { id } = req.query;
 
     const productsRepository = new ProductsRepository();
 
-    const product = await productsRepository.findById(id);
+    const product = await productsRepository.findById(String(id));
 
     if (!product) {
       throw new AppError('Product does not exist');
