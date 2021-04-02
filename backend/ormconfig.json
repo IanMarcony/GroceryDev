@@ -1,7 +1,7 @@
 {
   "type": "mysql",
   "host": "localhost",
-  "port": 3309,
+  "port": 3310,
   "username": "root",
   "password": "root",
   "database": "database_grocery",

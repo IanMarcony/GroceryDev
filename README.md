@@ -30,6 +30,10 @@ Este é um sistema de comércio com CRUD de produtos e compras
 
   npm run typeorm migration:run # para executar as migrations
 
+  # Caso dê erro na inicialização das migrations
+  # execute ->  docker-compose up
+  # quando finalizar a inicialização do contêiner, abra outro terminal e execute as migrations normalmente
+
   cd ../frontend #entre na pasta frontend
 
   npm install # ou yarn
@@ -45,7 +49,7 @@ Este é um sistema de comércio com CRUD de produtos e compras
 
   cd backend/ # entrar na pasta do backend
 
-  docker-compose up -d # irá inciar o contêiner do MYSQL na porta 3309
+  docker-compose up -d # irá inciar o contêiner do MYSQL na porta 3310
 
   npm start # ou yarn start
 ```
