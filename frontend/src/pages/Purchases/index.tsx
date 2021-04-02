@@ -52,7 +52,7 @@ const Purchases: React.FC = () => {
 
   const handleAlter = useCallback(
     (id: string) => {
-      history.push(`/form_purchases?id=${id}`);
+      history.push(`/form_purchases?type=edit&id=${id}`);
     },
     [history],
   );
@@ -94,7 +94,7 @@ const Purchases: React.FC = () => {
       </AnimationContainer>
       <button
         type="button"
-        onClick={() => handleCreate}
+        onClick={() => handleCreate()}
         style={{
           background: 'transparent',
           outline: 'none',

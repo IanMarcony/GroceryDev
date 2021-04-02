@@ -6,19 +6,21 @@ import {
   Select,
   MenuItem,
   Checkbox,
-  Input,
 } from '@material-ui/core';
-
-import { useRouteMatch } from 'react-router-dom';
+import { useHistory, useLocation, useRouteMatch } from 'react-router-dom';
+import Input from '../../../components/Input';
 import api from '../../../services/api';
 import { useToast } from '../../../hooks/toast';
 
-import { Container } from './styles';
+import Button from '../../../components/Button';
+import SelectS from '../../../components/SelectS';
+import { Container, ProductContainer } from './styles';
 
 interface PurchaseState {
   id?: string;
-  products: string[];
+  products_id: string[];
   status?: string;
+  total?: number;
   pay_type: string;
 }
 
@@ -46,10 +48,44 @@ interface IPurchasesParams {
 const FormPurchases: React.FC = () => {
   const { addToast } = useToast();
   const [purchase, setPurchase] = useState<PurchaseState>({} as PurchaseState);
-  const [products, setProducts] = useState<ProductState[]>([]);
-  const [selectedProducts, setSelectedProduts] = useState<ProductState[]>([]);
-  const { params } = useRouteMatch<IPurchasesParams>();
 
+  const [products, setProducts] = useState<ProductState[]>([]);
+  const [selectedProductsId, setSelectedProdutsId] = useState<string[]>([]);
+  const [selectedProducts, setSelectedProduts] = useState<ProductState[]>([]);
+
+  const history = useHistory();
+
+  const { search } = useLocation();
+
+  const id = new URLSearchParams(search).get('id');
+  useEffect(() => {
+    if (!id) return;
+    api
+      .get(`/purchases/single?id=${id}`)
+      .then((response) => {
+        setPurchase(response.data);
+
+        setSelectedProdutsId([response.data.products_id]);
+
+        const selects = [] as ProductState[];
+        // eslint-disable-next-line no-plusplus
+        for (let indexP = 0; indexP < selectedProductsId.length; indexP++) {
+          const idP = selectedProductsId[indexP];
+          const aux = products.findIndex(
+            (findProduct) => findProduct.id === idP,
+          );
+          selects.push(products[aux]);
+        }
+
+        setSelectedProduts([...selects]);
+      })
+      .catch((error) => {
+        addToast({
+          type: 'error',
+          title: 'Erro ao buscar produto',
+        });
+      });
+  }, [id, addToast, products]);
   useEffect(() => {
     async function loadProducts() {
       try {
@@ -70,50 +106,51 @@ const FormPurchases: React.FC = () => {
     loadProducts();
   }, [addToast]);
 
-  // const handleLoadProducts = useCallback(async () => {}, []);
-
   const handleSubmit = useCallback(async () => {
-    // try {
-    //   formRef.current?.setErrors({});
-    //   const schema = Yup.object().shape({
-    //     id: Yup.string().notRequired(),
-    //     name: Yup.string().required('Nome obrigatório'),
-    //     description: Yup.string().required('Descrição obrigatória'),
-    //     price: Yup.number().required('Preço obrigatório'),
-    //   });
-    //   await schema.validate(data, {
-    //     abortEarly: false,
-    //   });
-    // } catch (err) {
-    //   if (err instanceof Yup.ValidationError) {
-    //     const errors = getValidationErrors(err);
-    //     formRef.current?.setErrors(errors);
-    //     return;
-    //   }
-    //   addToast({
-    //     type: 'error',
-    //     title: 'Erro na autenticação',
-    //     description:
-    //       'Ocorreu um erro ao fazer login, verifique as credenciais',
-    //   });
-    // }
-  }, [addToast]);
+    if (selectedProductsId.length === 0) {
+      addToast({
+        type: 'error',
+        title: 'Necessário selecionar produto',
+      });
+      return;
+    }
+    const { products_id, pay_type, status } = purchase;
+    if (id) {
+      await api.put('/purchases', {
+        id,
+        products_id,
+        pay_type,
+        status,
+      });
+    } else {
+      await api.post('/purchases', {
+        products_id,
+        pay_type,
+      });
+    }
+
+    history.push('/purchases');
+  }, [addToast, id, purchase, history, selectedProductsId.length]);
 
   const handleChange = useCallback(
     (event: React.ChangeEvent<{ value: unknown }>) => {
       console.log(event.target.value);
-      // setSelectedProduts(event.target.value as string[]);
+      setSelectedProdutsId(event.target.value as string[]);
+      const index = products.findIndex(
+        (findProduct) => findProduct.id === event.target.value,
+      );
+      setSelectedProduts((state) => [products[index], ...state]);
     },
-    [],
+    [products],
   );
 
   return (
     <Container>
-      <form onSubmit={() => handleSubmit}>
-        {params.id ? <h1>Edite a compra</h1> : <h1>Crie uma compra</h1>}
+      <form onSubmit={handleSubmit}>
+        {id ? <h1>Edite a compra</h1> : <h1>Crie uma compra</h1>}
 
-        {params.id && (
-          <input type="text" value={params?.id} contentEditable={false} />
+        {id && (
+          <Input name="id" type="text" value={id} contentEditable={false} />
         )}
 
         <FormControl>
@@ -122,19 +159,19 @@ const FormPurchases: React.FC = () => {
             labelId="demo-mutiple-checkbox-label"
             id="demo-mutiple-checkbox"
             multiple
-            value={products}
+            value={selectedProductsId}
             onChange={handleChange}
-            input={<Input />}
+            input={<Input name="products" />}
             renderValue={(selected) => (selected as string[]).join(', ')}
             MenuProps={MenuProps}
           >
             {products.map((product) => (
               <MenuItem key={product.id} value={product.id}>
                 <Checkbox checked={products.indexOf(product) > -1} />
-                <div>
+                <ProductContainer>
                   <strong>{product.name}</strong>
                   <p>Preço: {product.price}</p>
-                </div>
+                </ProductContainer>
               </MenuItem>
             ))}
           </Select>
@@ -147,20 +184,36 @@ const FormPurchases: React.FC = () => {
           )}
         </span>
 
-        <select>
+        <SelectS
+          name="pay_type"
+          onChange={(event) =>
+            setPurchase({
+              pay_type: event.target.value,
+              products_id: purchase.products_id,
+            })
+          }
+        >
           <option value="cash">Dinheiro</option>
           <option value="credit card">Cartão de Crédito</option>
           <option value="debit card">Cartão de Débito</option>
-        </select>
+        </SelectS>
 
-        {params.id && (
-          <select>
+        {id && (
+          <SelectS
+            name="status"
+            onChange={(event) =>
+              setPurchase({
+                status: event.target.value,
+                ...purchase,
+              })
+            }
+          >
             <option value="ABERTO">ABERTO</option>
             <option value="FINALIZADO">FINALIZADO</option>
-          </select>
+          </SelectS>
         )}
 
-        <button type="submit">Salvar</button>
+        <Button type="submit">Salvar</Button>
       </form>
     </Container>
   );
