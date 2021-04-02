@@ -91,7 +91,7 @@ const FormProducts: React.FC = () => {
           title: id ? 'Atualizado com sucesso' : 'Criado com sucesso',
         });
 
-        history.push('/');
+        history.push('/products');
       } catch (err) {
         if (err instanceof Yup.ValidationError) {
           const errors = getValidationErrors(err);

@@ -50,7 +50,7 @@ const ProductsMoreInformation: React.FC = () => {
   return (
     <Container>
       <h1>{product?.name}</h1>
-      <p>{product?.description}</p>
+      <p>Descrição:{product?.description}</p>
       <span>Preço: R${product?.price.toFixed(2)}</span>
     </Container>
   );
