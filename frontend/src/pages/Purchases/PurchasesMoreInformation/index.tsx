@@ -5,12 +5,7 @@ import { useToast } from '../../../hooks/toast';
 import api from '../../../services/api';
 import ProductIcon from '../../../assets/images/box.svg';
 
-import {
-  Container,
-  AnimationContainer,
-  ListProducts,
-  InformationProduct,
-} from './styles';
+import { Container, ListProducts, InformationProduct } from './styles';
 
 interface PurchaseParams {
   id: string;
@@ -32,12 +27,13 @@ interface IPurchase {
 
 const PurchasesMoreInformation: React.FC = () => {
   const { params } = useRouteMatch<PurchaseParams>();
-  const [purchase, setPurchase] = useState<IPurchase | null>(null);
+  const [purchase, setPurchase] = useState<IPurchase>({} as IPurchase);
   const [loading, setLoading] = useState(false);
   const { addToast } = useToast();
 
   useEffect(() => {
     setLoading(true);
+    console.log(params.id);
     api
       .get(`/purchases/single?id=${params.id}`)
       .then((response) => {
@@ -54,25 +50,15 @@ const PurchasesMoreInformation: React.FC = () => {
       });
   }, [params.id, addToast]);
 
-  if (loading) {
-    return (
-      <Container>
-        <AnimationContainer>
-          <CircularProgress size={40} color="primary" />
-        </AnimationContainer>
-      </Container>
-    );
-  }
-
   return (
     <Container>
-      <h1>Compra: {purchase?.id}</h1>
-      <span>Total: R${purchase?.total.toFixed(2)}</span>
-      <span>Status: R${purchase?.status}</span>
-      <span>Tipo de pagamento: R${purchase?.pay_type}</span>
+      <h1>Compra: {purchase.id}</h1>
+      <p>Total: R${purchase.total.toFixed(2)}</p>
+      <p>Status: R${purchase.status}</p>
+      <p>Tipo de pagamento: R${purchase.pay_type}</p>
 
       <ListProducts>
-        {purchase?.products.map((product) => (
+        {purchase.products.map((product) => (
           <div key={product.id}>
             <img src={ProductIcon} alt={product.id} />
             <InformationProduct>
@@ -82,6 +68,8 @@ const PurchasesMoreInformation: React.FC = () => {
           </div>
         ))}
       </ListProducts>
+
+      {loading && <CircularProgress size={40} color="primary" />}
     </Container>
   );
 };

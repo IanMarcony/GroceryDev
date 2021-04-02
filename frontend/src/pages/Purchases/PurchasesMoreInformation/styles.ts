@@ -1,22 +1,5 @@
 import styled, { keyframes } from 'styled-components';
 
-export const Container = styled.div`
-  width: 100%;
-  max-width: 700px;
-  height: 100vh;
-  margin: 0 auto;
-
-  h1 {
-    font-size: 30px;
-    text-align: start;
-  }
-
-  span {
-    margin-top: 10px;
-    font-size: 20px;
-  }
-`;
-
 const appearFromDown = keyframes`
   from{
     opacity: 0;
@@ -31,9 +14,25 @@ const appearFromDown = keyframes`
 
 `;
 
-export const AnimationContainer = styled.div`
-  text-align: center;
+export const Container = styled.div`
+  width: 100%;
+  max-width: 700px;
+  height: 100vh;
+  margin: 0 auto;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
   animation: ${appearFromDown} 1s;
+
+  h1 {
+    font-size: 30px;
+    text-align: start;
+  }
+
+  p {
+    margin-top: 10px;
+    font-size: 20px;
+  }
 `;
 
 export const ListProducts = styled.div`

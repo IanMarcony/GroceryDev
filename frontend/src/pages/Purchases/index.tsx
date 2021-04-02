@@ -77,7 +77,7 @@ const Purchases: React.FC = () => {
   );
   const handleMoreInformation = useCallback(
     (id: string) => {
-      history.push(`/info_purchase/${id}`);
+      history.push(`/info_puchase/${id}`);
     },
     [history],
   );
