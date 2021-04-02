@@ -39,6 +39,7 @@ const FormProducts: React.FC = () => {
   const { addToast } = useToast();
 
   useEffect(() => {
+    if (!id) return;
     api
       .get(`/products/single?id=${id}`)
       .then((response) => {
