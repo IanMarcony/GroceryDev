@@ -50,6 +50,14 @@ export const Container = styled.div<ContainerProps>`
     }
   }
 
+  input[type='number']::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+  }
+  input[type='number'] {
+    -moz-appearance: textfield;
+    appearance: textfield;
+  }
+
   svg {
     margin-right: 16px;
   }

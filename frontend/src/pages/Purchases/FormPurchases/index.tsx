@@ -9,9 +9,9 @@ import {
   Input,
 } from '@material-ui/core';
 
+import { useRouteMatch } from 'react-router-dom';
 import api from '../../../services/api';
 import { useToast } from '../../../hooks/toast';
-import { useFormType } from '../../../hooks/formType';
 
 import { Container } from './styles';
 
@@ -39,12 +39,16 @@ const MenuProps = {
   },
 };
 
+interface IPurchasesParams {
+  id?: string;
+}
+
 const FormPurchases: React.FC = () => {
-  const { getFormType } = useFormType();
   const { addToast } = useToast();
   const [purchase, setPurchase] = useState<PurchaseState>({} as PurchaseState);
   const [products, setProducts] = useState<ProductState[]>([]);
   const [selectedProducts, setSelectedProduts] = useState<ProductState[]>([]);
+  const { params } = useRouteMatch<IPurchasesParams>();
 
   useEffect(() => {
     async function loadProducts() {
@@ -55,12 +59,16 @@ const FormPurchases: React.FC = () => {
 
         addToast({ title: 'Carregado todos os produtos' });
       } catch {
-        console.log('error');
+        addToast({
+          type: 'error',
+          title: 'Erro na conexão',
+          description: 'Ocorreu um erro na comunicação com o servidor',
+        });
       }
     }
 
     loadProducts();
-  }, []);
+  }, [addToast]);
 
   // const handleLoadProducts = useCallback(async () => {}, []);
 
@@ -102,14 +110,10 @@ const FormPurchases: React.FC = () => {
   return (
     <Container>
       <form onSubmit={() => handleSubmit}>
-        {getFormType().type === 'edit' ? (
-          <h1>Edite a compra</h1>
-        ) : (
-          <h1>Crie uma compra</h1>
-        )}
+        {params.id ? <h1>Edite a compra</h1> : <h1>Crie uma compra</h1>}
 
-        {getFormType().id && (
-          <input type="text" value={getFormType().id} contentEditable={false} />
+        {params.id && (
+          <input type="text" value={params?.id} contentEditable={false} />
         )}
 
         <FormControl>
@@ -149,7 +153,7 @@ const FormPurchases: React.FC = () => {
           <option value="debit card">Cartão de Débito</option>
         </select>
 
-        {getFormType().type === 'edit' && (
+        {params.id && (
           <select>
             <option value="ABERTO">ABERTO</option>
             <option value="FINALIZADO">FINALIZADO</option>

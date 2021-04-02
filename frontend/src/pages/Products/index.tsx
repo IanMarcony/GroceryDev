@@ -7,7 +7,6 @@ import { useHistory } from 'react-router-dom';
 import ProductIcon from '../../assets/images/box.svg';
 
 import Tooltip from '../../components/Tooltip';
-import { useFormType } from '../../hooks/formType';
 
 import { useToast } from '../../hooks/toast';
 import api from '../../services/api';
@@ -30,7 +29,6 @@ const Products: React.FC = () => {
   const [products, setProducts] = useState<IProduct[]>([]);
   const [loading, setLoading] = useState(false);
   const { addToast } = useToast();
-  const { setFormType } = useFormType();
 
   const history = useHistory();
 
@@ -41,8 +39,6 @@ const Products: React.FC = () => {
         const { data } = await api.get('/products/all');
 
         setProducts([...data]);
-
-        addToast({ title: 'Carregado todos os produtos' });
       } catch (err) {
         addToast({
           title: 'Occoreu algum erro',
@@ -59,11 +55,9 @@ const Products: React.FC = () => {
 
   const handleAlter = useCallback(
     (id: string) => {
-      setFormType('edit', id);
-
-      history.push('/edit/products');
+      history.push(`/form_products/${id}`);
     },
-    [setFormType, history],
+    [history],
   );
   const handleDelete = useCallback(
     async (id: string, index: number) => {
@@ -83,15 +77,14 @@ const Products: React.FC = () => {
   );
   const handleMoreInformation = useCallback(
     (id: string) => {
-      history.push(`/info/product/${id}`);
+      history.push(`/info_product/${id}`);
     },
     [history],
   );
 
   const handleCreate = useCallback(() => {
-    setFormType('create', '');
-    history.push('/create/products');
-  }, [setFormType, history]);
+    history.push('/form_products');
+  }, [history]);
 
   if (loading) {
     return (
@@ -111,7 +104,7 @@ const Products: React.FC = () => {
       </AnimationContainer>
       <button
         type="button"
-        onClick={() => handleCreate}
+        onClick={handleCreate}
         style={{
           background: 'transparent',
           outline: 'none',

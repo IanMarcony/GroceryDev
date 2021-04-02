@@ -7,7 +7,6 @@ import { useHistory } from 'react-router-dom';
 import PurchaseIcon from '../../assets/images/grocery.svg';
 
 import Tooltip from '../../components/Tooltip';
-import { useFormType } from '../../hooks/formType';
 
 import { useToast } from '../../hooks/toast';
 import api from '../../services/api';
@@ -28,8 +27,6 @@ const Purchases: React.FC = () => {
   const [purchases, setPurchases] = useState<IPurchase[]>([]);
   const [loading, setLoading] = useState(false);
   const { addToast } = useToast();
-  const { setFormType } = useFormType();
-
   const history = useHistory();
 
   useEffect(() => {
@@ -39,7 +36,6 @@ const Purchases: React.FC = () => {
         const { data } = await api.get('/purchases/all');
 
         setPurchases([...data]);
-        addToast({ title: 'Carregado todas as compras' });
       } catch {
         addToast({
           title: 'Occoreu algum erro',
@@ -56,10 +52,9 @@ const Purchases: React.FC = () => {
 
   const handleAlter = useCallback(
     (id: string) => {
-      setFormType('edit', id);
-      history.push('/edit/purchases');
+      history.push(`/form_purchases/${id}`);
     },
-    [setFormType, history],
+    [history],
   );
   const handleDelete = useCallback(async (id: string, index: number) => {
     await api.delete('/purchases', {
@@ -72,15 +67,14 @@ const Purchases: React.FC = () => {
   }, []);
   const handleMoreInformation = useCallback(
     (id: string) => {
-      history.push(`/info/purchase/${id}`);
+      history.push(`/info_purchase/${id}`);
     },
     [history],
   );
 
   const handleCreate = useCallback(() => {
-    setFormType('create', '');
-    history.push('/create/purchases');
-  }, [setFormType, history]);
+    history.push('/form_purchases');
+  }, [history]);
 
   if (loading) {
     return (

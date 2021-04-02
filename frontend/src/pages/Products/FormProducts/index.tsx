@@ -5,7 +5,7 @@ import { Form } from '@unform/web';
 
 import * as Yup from 'yup';
 
-import ReactModal from 'react-modal';
+import { useRouteMatch } from 'react-router-dom';
 import { useToast } from '../../../hooks/toast';
 
 import api from '../../../services/api';
@@ -15,7 +15,6 @@ import getValidationErrors from '../../../utils/getValidationErrors';
 import Input from '../../../components/Input';
 import TextArea from '../../../components/TextArea';
 import Button from '../../../components/Button';
-import { useFormType } from '../../../hooks/formType';
 
 import { Container } from './styles';
 
@@ -26,9 +25,14 @@ interface ProductState {
   price: string;
 }
 
+interface IProductsParams {
+  id?: string;
+}
+
 const FormProducts: React.FC = () => {
   const formRef = useRef<FormHandles>(null);
-  const { getFormType } = useFormType();
+  const { params } = useRouteMatch<IProductsParams>();
+
   const { addToast } = useToast();
 
   const handleSubmit = useCallback(
@@ -40,7 +44,9 @@ const FormProducts: React.FC = () => {
           id: Yup.string().notRequired(),
           name: Yup.string().required('Nome obrigatório'),
           description: Yup.string().required('Descrição obrigatória'),
-          price: Yup.number().required('Preço obrigatório'),
+          price: Yup.number()
+            .min(0, 'Número acima de 0')
+            .required('Preço obrigatório'),
         });
 
         await schema.validate(data, {
@@ -49,7 +55,7 @@ const FormProducts: React.FC = () => {
 
         const { id, price, description, name } = data;
 
-        if (getFormType().type === 'edit') {
+        if (params.id) {
           await api.put('/products', {
             id,
             price,
@@ -57,7 +63,7 @@ const FormProducts: React.FC = () => {
             name,
           });
         } else {
-          await api.put('/products', {
+          await api.post('/products', {
             price,
             description,
             name,
@@ -72,39 +78,31 @@ const FormProducts: React.FC = () => {
         }
         addToast({
           type: 'error',
-          title:
-            getFormType().type === 'edit'
-              ? 'Erro ao atualizar'
-              : 'Erro ao criar',
-          description:
-            getFormType().type === 'edit'
-              ? 'Ocorreu um erro ao editar os dados'
-              : 'Erro ao criar',
+          title: params.id ? 'Erro ao atualizar' : 'Erro ao criar',
+          description: params.id
+            ? 'Ocorreu um erro ao editar os dados'
+            : 'Erro ao criar',
         });
       }
     },
-    [addToast, getFormType],
+    [addToast, params.id],
   );
   return (
     <Container>
       <Form ref={formRef} onSubmit={handleSubmit}>
-        {getFormType().type === 'edit' ? (
-          <h1>Edite o produto</h1>
-        ) : (
-          <h1>Crie um produto</h1>
-        )}
+        {params.id ? <h1>Edite o produto</h1> : <h1>Crie um produto</h1>}
 
-        {getFormType().id && (
+        {params.id && (
           <Input
             name="id"
             type="text"
-            value={getFormType().id}
+            value={params?.id}
             contentEditable={false}
           />
         )}
         <Input name="name" type="text" placeholder="Nome" />
         <TextArea name="description" placeholder="Descrição" />
-        <Input name="price" type="number" min={0} placeholder="Preço" />
+        <Input name="price" type="text" min={0} placeholder="Preço" />
         <Button type="submit">Salvar</Button>
       </Form>
     </Container>

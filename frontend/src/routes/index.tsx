@@ -14,10 +14,10 @@ const Routes: React.FC = () => {
       <Route exact path="/" component={Home} />
       <Route path="/products" component={Products} />
       <Route path="/purchases" component={Purchases} />
-      <Route path="/info/product/:id+" component={ProductsMoreInformation} />
-      <Route path="/info/puchase/:id+" component={PurchasesMoreInformation} />
-      <Route path="/:type+/products" component={FormProducts} />
-      <Route path="/:type+/purchases" component={FormPurchases} />
+      <Route path="/info_product/:id+" component={ProductsMoreInformation} />
+      <Route path="/info_puchase/:id+" component={PurchasesMoreInformation} />
+      <Route path="/form_products/:id+" component={FormProducts} />
+      <Route path="/form_purchases/:id+" component={FormPurchases} />
     </Switch>
   );
 };

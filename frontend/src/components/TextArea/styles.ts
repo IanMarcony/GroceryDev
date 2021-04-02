@@ -39,7 +39,7 @@ export const Container = styled.div<ContainerProps>`
   & + div {
     margin-top: 8px;
   }
-  input {
+  textarea {
     flex: 1;
     background: transparent;
     border: 0;
