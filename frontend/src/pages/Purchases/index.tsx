@@ -52,7 +52,7 @@ const Purchases: React.FC = () => {
 
   const handleAlter = useCallback(
     (id: string) => {
-      history.push(`/form_purchases/${id}`);
+      history.push(`/form_purchases?id=${id}`);
     },
     [history],
   );
@@ -73,7 +73,7 @@ const Purchases: React.FC = () => {
   );
 
   const handleCreate = useCallback(() => {
-    history.push('/form_purchases');
+    history.push('/form_purchases?type=create');
   }, [history]);
 
   if (loading) {

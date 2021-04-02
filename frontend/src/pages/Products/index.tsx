@@ -55,7 +55,7 @@ const Products: React.FC = () => {
 
   const handleAlter = useCallback(
     (id: string) => {
-      history.push(`/form_products/${id}`);
+      history.push(`/form_products?id=${id}`);
     },
     [history],
   );
@@ -83,7 +83,7 @@ const Products: React.FC = () => {
   );
 
   const handleCreate = useCallback(() => {
-    history.push('/form_products');
+    history.push('/form_products?type=create');
   }, [history]);
 
   if (loading) {

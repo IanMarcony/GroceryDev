@@ -16,8 +16,8 @@ const Routes: React.FC = () => {
       <Route path="/purchases" component={Purchases} />
       <Route path="/info_product/:id+" component={ProductsMoreInformation} />
       <Route path="/info_puchase/:id+" component={PurchasesMoreInformation} />
-      <Route path="/form_products/:id+" component={FormProducts} />
-      <Route path="/form_purchases/:id+" component={FormPurchases} />
+      <Route path="/form_products" component={FormProducts} />
+      <Route path="/form_purchases" component={FormPurchases} />
     </Switch>
   );
 };

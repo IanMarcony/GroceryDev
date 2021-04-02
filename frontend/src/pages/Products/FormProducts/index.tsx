@@ -1,11 +1,11 @@
-import React, { useCallback, useRef } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 
 import { FormHandles } from '@unform/core';
 import { Form } from '@unform/web';
 
 import * as Yup from 'yup';
 
-import { useRouteMatch } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import { useToast } from '../../../hooks/toast';
 
 import api from '../../../services/api';
@@ -22,18 +22,33 @@ interface ProductState {
   id?: string;
   name: string;
   description: string;
-  price: string;
-}
-
-interface IProductsParams {
-  id?: string;
+  price: number;
 }
 
 const FormProducts: React.FC = () => {
   const formRef = useRef<FormHandles>(null);
-  const { params } = useRouteMatch<IProductsParams>();
+
+  const [product, setProduct] = useState<ProductState>({} as ProductState);
+
+  const history = useHistory();
+
+  const { search } = useLocation();
+
+  const id = new URLSearchParams(search).get('id');
 
   const { addToast } = useToast();
+
+  useEffect(() => {
+    api
+      .get('/products/single', {
+        data: {
+          id,
+        },
+      })
+      .then((response) => {
+        setProduct(response.data);
+      });
+  }, [id]);
 
   const handleSubmit = useCallback(
     async (data: ProductState) => {
@@ -53,11 +68,11 @@ const FormProducts: React.FC = () => {
           abortEarly: false,
         });
 
-        const { id, price, description, name } = data;
+        const { price, description, name } = data;
 
-        if (params.id) {
+        if (id) {
           await api.put('/products', {
-            id,
+            id: data.id,
             price,
             description,
             name,
@@ -69,6 +84,12 @@ const FormProducts: React.FC = () => {
             name,
           });
         }
+        addToast({
+          type: 'success',
+          title: id ? 'Atualizado com sucesso' : 'Criado com sucesso',
+        });
+
+        history.push('/');
       } catch (err) {
         if (err instanceof Yup.ValidationError) {
           const errors = getValidationErrors(err);
@@ -78,31 +99,47 @@ const FormProducts: React.FC = () => {
         }
         addToast({
           type: 'error',
-          title: params.id ? 'Erro ao atualizar' : 'Erro ao criar',
-          description: params.id
+          title: id ? 'Erro ao atualizar' : 'Erro ao criar',
+          description: id
             ? 'Ocorreu um erro ao editar os dados'
             : 'Erro ao criar',
         });
       }
     },
-    [addToast, params.id],
+    [addToast, id, history],
   );
   return (
     <Container>
-      <Form ref={formRef} onSubmit={handleSubmit}>
-        {params.id ? <h1>Edite o produto</h1> : <h1>Crie um produto</h1>}
+      <Form ref={formRef} style={{ marginTop: '20px' }} onSubmit={handleSubmit}>
+        {id ? <h1>Edite o produto</h1> : <h1>Crie um produto</h1>}
 
-        {params.id && (
+        {id && (
           <Input
             name="id"
             type="text"
-            value={params?.id}
+            style={{ marginTop: '10px', cursor: 'none' }}
+            value={id}
             contentEditable={false}
           />
         )}
-        <Input name="name" type="text" placeholder="Nome" />
-        <TextArea name="description" placeholder="Descrição" />
-        <Input name="price" type="text" min={0} placeholder="Preço" />
+        <Input
+          name="name"
+          type="text"
+          value={product.name}
+          placeholder="Nome"
+        />
+        <TextArea
+          name="description"
+          value={product.description}
+          placeholder="Descrição"
+        />
+        <Input
+          name="price"
+          type="text"
+          value={product.price.toFixed(2)}
+          min={0}
+          placeholder="Preço"
+        />
         <Button type="submit">Salvar</Button>
       </Form>
     </Container>
