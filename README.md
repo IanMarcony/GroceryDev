@@ -45,7 +45,7 @@ Este é um sistema de comércio com CRUD de produtos e compras
 
   cd backend/ # entrar na pasta do backend
 
-  docker-compose up -d # irá inciar o contêiner do MYSQL na porta 3308
+  docker-compose up -d # irá inciar o contêiner do MYSQL na porta 3309
 
   npm start # ou yarn start
 ```

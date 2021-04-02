@@ -1,5 +1,5 @@
-import { CircularProgress } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
+import { CircularProgress } from '@material-ui/core';
 import { useRouteMatch } from 'react-router-dom';
 import { useToast } from '../../../hooks/toast';
 import api from '../../../services/api';
@@ -41,6 +41,7 @@ const PurchasesMoreInformation: React.FC = () => {
     api
       .get(`/purchases/single?id=${params.id}`)
       .then((response) => {
+        console.log(response.data);
         setPurchase(response.data);
         setLoading(false);
       })

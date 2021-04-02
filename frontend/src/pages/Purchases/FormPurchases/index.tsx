@@ -1,5 +1,5 @@
 /* eslint-disable no-plusplus */
-import React, { useCallback, useState, useEffect } from 'react';
+import React, { useCallback, useState, useEffect, FormEvent } from 'react';
 
 import {
   FormControl,
@@ -49,8 +49,8 @@ const FormPurchases: React.FC = () => {
   // const formRef = useRef<FormHandles>(null);
 
   const { addToast } = useToast();
-  const [status, setStatus] = useState('');
-  const [pay_type, setPayType] = useState('');
+  const [status, setStatus] = useState('ABERTO');
+  const [pay_type, setPayType] = useState('cash');
 
   const [products, setProducts] = useState<ProductState[]>([]);
   const [selectedProductsId, setSelectedProductsId] = useState<string[]>([]);
@@ -102,36 +102,44 @@ const FormPurchases: React.FC = () => {
     loadProducts();
   }, [addToast, history]);
 
-  const handleSubmit = useCallback(async () => {
-    if (selectedProductsId.length === 0) {
-      return addToast({
-        type: 'error',
-        title: 'Necessário selecionar produto',
-      });
-    }
-    try {
-      if (id) {
-        await api.put('/purchases', {
-          id,
-          products_id: selectedProductsId,
-          pay_type,
-          status,
+  const handleSubmit = useCallback(
+    async (e: FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+      if (selectedProductsId.length === 0) {
+        addToast({
+          type: 'error',
+          title: 'Necessário selecionar produto',
         });
-      } else {
-        await api.post('/purchases', {
-          products_id: selectedProductsId,
-          pay_type,
+        return;
+      }
+      try {
+        if (id) {
+          await api.put('/purchases', {
+            id,
+            products_id: selectedProductsId,
+            pay_type,
+            status,
+          });
+        } else {
+          await api.post('/purchases', {
+            products_id: selectedProductsId,
+            pay_type,
+          });
+        }
+        addToast({
+          type: 'success',
+          title: id ? 'Atualizado com sucesso' : 'Criado com sucesso',
+        });
+        history.push('/purchases');
+      } catch {
+        addToast({
+          type: 'error',
+          title: 'Ocorreu um erro ao se cadastrar',
         });
       }
-
-      history.push('/purchases');
-    } catch {
-      addToast({
-        type: 'error',
-        title: 'Ocorreu um erro ao se cadastrar',
-      });
-    }
-  }, [addToast, id, history, pay_type, status, selectedProductsId]);
+    },
+    [addToast, id, history, pay_type, status, selectedProductsId],
+  );
 
   const handleChange = useCallback(
     (event: React.ChangeEvent<{ value: unknown }>) => {
@@ -184,6 +192,7 @@ const FormPurchases: React.FC = () => {
 
         <select
           name="pay_type"
+          value={pay_type}
           onChange={(event) => setPayType(event.target.value)}
         >
           <option value="cash">Dinheiro</option>
@@ -194,6 +203,7 @@ const FormPurchases: React.FC = () => {
         {id && (
           <select
             name="status"
+            value={status}
             onChange={(event) => setStatus(event.target.value)}
           >
             <option value="ABERTO">ABERTO</option>
