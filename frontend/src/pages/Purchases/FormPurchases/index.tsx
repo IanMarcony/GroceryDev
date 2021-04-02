@@ -50,8 +50,8 @@ const FormPurchases: React.FC = () => {
   // const formRef = useRef<FormHandles>(null);
 
   const { addToast } = useToast();
-  const [status, setStatus] = useState('');
-  const [pay_type, setPayType] = useState('');
+  const [status, setStatus] = useState('ABERTO');
+  const [pay_type, setPayType] = useState('cash');
 
   const [products, setProducts] = useState<ProductState[]>([]);
   const [selectedProductsId, setSelectedProductsId] = useState<string[]>([]);

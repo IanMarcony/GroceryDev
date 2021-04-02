@@ -19,7 +19,7 @@ interface IProduct {
 
 interface IPurchase {
   id: string;
-  total: number;
+
   status: string;
   pay_type: string;
   products: IProduct[];
@@ -29,16 +29,18 @@ const PurchasesMoreInformation: React.FC = () => {
   const { params } = useRouteMatch<PurchaseParams>();
   const [purchase, setPurchase] = useState<IPurchase>({} as IPurchase);
   const [loading, setLoading] = useState(false);
+  const [total, setTotal] = useState(0);
   const { addToast } = useToast();
 
   useEffect(() => {
     setLoading(true);
-    console.log(params.id);
     api
       .get(`/purchases/single?id=${params.id}`)
       .then((response) => {
-        console.log(response.data);
         setPurchase(response.data);
+
+        setTotal(response.data.total);
+
         setLoading(false);
       })
       .catch((error) => {
@@ -50,26 +52,37 @@ const PurchasesMoreInformation: React.FC = () => {
       });
   }, [params.id, addToast]);
 
+  if (loading) {
+    return (
+      <Container>
+        <CircularProgress size={40} color="primary" />
+      </Container>
+    );
+  }
+
   return (
     <Container>
+      {/* {!loading ? (
+        <> */}
       <h1>Compra: {purchase.id}</h1>
-      <p>Total: R${purchase.total.toFixed(2)}</p>
-      <p>Status: R${purchase.status}</p>
-      <p>Tipo de pagamento: R${purchase.pay_type}</p>
+      <p>Total: R${total.toFixed(2)}</p>
+      <p>Status: {purchase.status}</p>
+      <p>Tipo de pagamento: {purchase.pay_type}</p>
 
       <ListProducts>
-        {purchase.products.map((product) => (
-          <div key={product.id}>
-            <img src={ProductIcon} alt={product.id} />
-            <InformationProduct>
-              <strong>{product.name}</strong>
-              <p>Preço: {product.price}</p>
-            </InformationProduct>
-          </div>
-        ))}
+        {purchase.products &&
+          purchase.products.map((product) => (
+            <div key={product.id}>
+              <img src={ProductIcon} alt={product.id} />
+              <InformationProduct>
+                <strong>{product.name}</strong>
+                <p>Preço: {product.price}</p>
+              </InformationProduct>
+            </div>
+          ))}
       </ListProducts>
-
-      {loading && <CircularProgress size={40} color="primary" />}
+      {/* </>
+      ) : null} */}
     </Container>
   );
 };
