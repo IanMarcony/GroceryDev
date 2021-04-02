@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-plusplus */
 import React, { useCallback, useState, useEffect, FormEvent } from 'react';
 
@@ -49,8 +50,8 @@ const FormPurchases: React.FC = () => {
   // const formRef = useRef<FormHandles>(null);
 
   const { addToast } = useToast();
-  const [status, setStatus] = useState('ABERTO');
-  const [pay_type, setPayType] = useState('cash');
+  const [status, setStatus] = useState('');
+  const [pay_type, setPayType] = useState('');
 
   const [products, setProducts] = useState<ProductState[]>([]);
   const [selectedProductsId, setSelectedProductsId] = useState<string[]>([]);
@@ -83,7 +84,7 @@ const FormPurchases: React.FC = () => {
           title: 'Erro ao buscar produto',
         });
       });
-  }, [id, addToast, products, selectedProductsId]);
+  }, []);
   useEffect(() => {
     async function loadProducts() {
       try {
@@ -100,7 +101,7 @@ const FormPurchases: React.FC = () => {
     }
 
     loadProducts();
-  }, [addToast, history]);
+  }, []);
 
   const handleSubmit = useCallback(
     async (e: FormEvent<HTMLFormElement>) => {
@@ -179,7 +180,9 @@ const FormPurchases: React.FC = () => {
           >
             {products.map((product) => (
               <MenuItem key={product.id} value={product.id}>
-                <Checkbox checked={products.indexOf(product) > -1} />
+                <Checkbox
+                  checked={selectedProductsId.indexOf(product.id) > -1}
+                />
                 <ProductContainer>
                   <strong>{product.name}</strong>
                   <p>Preço: {product.price}</p>

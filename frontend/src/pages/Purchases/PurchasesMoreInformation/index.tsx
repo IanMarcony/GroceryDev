@@ -53,6 +53,7 @@ const PurchasesMoreInformation: React.FC = () => {
         setLoading(false);
       });
   }, [params.id, addToast]);
+
   if (loading) {
     return (
       <Container>
@@ -62,6 +63,7 @@ const PurchasesMoreInformation: React.FC = () => {
       </Container>
     );
   }
+
   return (
     <Container>
       <h1>Compra: {purchase?.id}</h1>

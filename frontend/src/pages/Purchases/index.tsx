@@ -56,15 +56,25 @@ const Purchases: React.FC = () => {
     },
     [history],
   );
-  const handleDelete = useCallback(async (id: string, index: number) => {
-    await api.delete('/purchases', {
-      data: {
-        id,
-      },
-    });
+  const handleDelete = useCallback(
+    async (id: string, index: number) => {
+      addToast({
+        title: 'Deletando....',
+      });
+      await api.delete('/purchases', {
+        data: {
+          id,
+        },
+      });
+      addToast({
+        type: 'success',
+        title: 'Deletado com sucesso',
+      });
 
-    setPurchases((state) => state.splice(index, 1));
-  }, []);
+      setPurchases((state) => state.splice(index, 1));
+    },
+    [addToast],
+  );
   const handleMoreInformation = useCallback(
     (id: string) => {
       history.push(`/info_purchase/${id}`);
